@@ -14,6 +14,8 @@
 - @fastify/swagger
 - @fastify/swagger-ui
 - @fastify/cors
+- @faker-js/faker
+- dayjs
 
 ### Logicas:
 

@@ -1,5 +1,5 @@
 {
-  "name": "pass.in-api",
+  "name": "check-pass.in-api",
   "version": "1.0.0",
   "description": "Api",
   "main": "index.js",
@@ -17,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/node": "^20.12.2",
     "prisma": "^5.11.0",
     "tsup": "^8.0.2",
@@ -28,6 +29,7 @@
     "@fastify/swagger": "^8.14.0",
     "@fastify/swagger-ui": "^3.0.0",
     "@prisma/client": "^5.11.0",
+    "dayjs": "^1.11.10",
     "fastify": "^4.26.2",
     "fastify-type-provider-zod": "^1.1.9",
     "zod": "^3.22.4"
