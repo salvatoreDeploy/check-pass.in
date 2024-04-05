@@ -27,7 +27,8 @@ export async function getEventAttenddes(app: FastifyInstance) {
                 createdAt: z.date(),
                 checkedInAt: z.date().nullish()
               })
-            )
+            ),
+            total: z.number()
           })
         }
       }
@@ -35,33 +36,48 @@ export async function getEventAttenddes(app: FastifyInstance) {
       const { eventId } = req.params
       const {pageIndex, querySearch} = req.query
 
-      const attenddes = await prisma.attendde.findMany({
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          createdAt: true,
-          CheckIn: {
-            select: {
-              createdAt: true
+      const [attenddes, total] = await Promise.all([
+        prisma.attendde.findMany({
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            createdAt: true,
+            CheckIn: {
+              select: {
+                createdAt: true
+              }
             }
-          }
-        },
-        where: querySearch ? {
-          eventId,
-          name: {
-            contains: querySearch
-          }
-        } : {
-          eventId,
+          },
+          where: querySearch ? {
+            eventId,
+            name: {
+              contains: querySearch
+            }
+          } : {
+            eventId,
 
-        },
-        take: 10,
-        skip: pageIndex * 10,
-        orderBy: {
-          createdAt: 'desc'
-        }
-      })
+          },
+          take: 10,
+          skip: pageIndex * 10,
+          orderBy: {
+            createdAt: 'desc'
+          }
+        }),
+
+        prisma.attendde.count({
+          where: querySearch ? {
+            eventId,
+            name: {
+              contains: querySearch
+            }
+          } : {
+            eventId
+          }
+        })
+      ])
+
+
       
       return reply.status(200).send({
         attenddes: attenddes.map(attendde => {
@@ -71,7 +87,9 @@ export async function getEventAttenddes(app: FastifyInstance) {
             email: attendde.email,
             createdAt: attendde.createdAt,
             checkedInAt: attendde.CheckIn?.createdAt ?? null
-        }
-      })})
+          }
+        }),
+        total,
+      })
     })
 }
